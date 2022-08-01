@@ -1,1 +1,6 @@
-<p>navbar works!</p>
+<nav class="navigation" *ngIf="authService.isLogged">
+  <a class="nav-item" [routerLink]="'/'">Questions list</a>
+  <a class="nav-item" [routerLink]="'/management'">Questions management</a>
+  <a class="nav-item" (click)="logout()">Logout</a>
+</nav>
+
