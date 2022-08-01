@@ -1,0 +1,16 @@
+.navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10%;
+  width: 100%;
+  gap: 40px;
+  background: aqua;
+
+  a {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #111;
+  }
+}
