@@ -1,1 +1,47 @@
-<p>question-list works!</p>
+<div class="container">
+  <div class="unanswered">
+    <div class="card" *ngFor="let question of questionService.unansweredQuestions">
+      <form [formGroup]="answerForm" (submit)="confirmAnswer(question)">
+        <b>Question: {{question.text}}</b>
+
+        <div class="checkbox" *ngIf="question.type === 'Multiple choice'">
+          <mat-checkbox *ngFor="let el of question.options, let i = index"
+                        value="{{el}}"
+                        formArrayName="multipleAnswers"
+                        (change)="toggleCheckbox($event); checkValidity($event, checkboxBtn, question)">
+            <p [formControlName]="i" ngDefaultControl>{{el}}</p>
+          </mat-checkbox>
+          <button #checkboxBtn type="submit" mat-raised-button [disabled]="disabled">Confirm</button>
+        </div>
+
+        <mat-radio-group class="radio-group" *ngIf="question.type === 'Single choice'">
+          <mat-radio-button *ngFor="let el of question.options"
+                            value="{{el}}"
+                            formControlName="singleAnswer"
+                            ngDefaultControl
+                            (change)="checkValidity($event, radioBtn, question)">
+            <p>{{el}}</p>
+          </mat-radio-button>
+          <button #radioBtn type="submit" mat-raised-button [disabled]="disabled">Confirm</button>
+        </mat-radio-group>
+
+        <div *ngIf="question.type === 'Open answer'" class="textarea">
+          <textarea rows="6"
+                    minlength="1"
+                    maxlength="255"
+                    formControlName="openAnswer"
+                    (ngModelChange)="checkValidity($event, textBtn, question)"></textarea>
+          <button #textBtn type="submit" mat-raised-button [disabled]="disabled">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="answered">
+    <div class="card" *ngFor="let question of questionService.answeredQuestions, let i = index">
+      <b>Question: {{question.text}}</b>
+      <p *ngIf="question.type === 'Multiple choice'">Your answer: {{questionService.getUserAnswer(question).join(', ')}}</p>
+      <p *ngIf="question.type !== 'Multiple choice'">Your answer: {{questionService.getUserAnswer(question)}}</p>
+      <button mat-raised-button (click)="removeAnswer(question)">Remove answer</button>
+    </div>
+  </div>
+</div>

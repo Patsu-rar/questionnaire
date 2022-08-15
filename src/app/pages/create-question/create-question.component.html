@@ -1,1 +1,41 @@
-<p>create-question works!</p>
+<div class="container">
+  <form [formGroup]="questionForm" (submit)="createQuestion()">
+    <div class="type">
+      <mat-label>Question type</mat-label>
+      <mat-select [(value)]="selectedType" formControlName="type" (selectionChange)="clearList()">
+        <mat-option *ngFor="let el of types, let i = index" [value]="types[i]">
+          {{el}}
+        </mat-option>
+      </mat-select>
+    </div>
+
+    <mat-label>Enter your question:</mat-label>
+    <input class="question" matInput type="text" placeholder="Your question..." formControlName="question">
+    <div class="options">
+      <div class="single-option" *ngIf="selectedType === 'Single choice'">
+        <mat-radio-group aria-label="Select an option" class="radio-group">
+          <button type="button" mat-button (click)="addOption()">Add option</button>
+          <mat-radio-button #radioButton formArrayName="options"
+                            *ngFor="let el of items, let i = index"
+                            value="{{optionText.value}}"
+                            (click)="toggleState(radioButton)">
+            <input matInput #optionText type="text" [formControlName]="i">
+            <button type="button" mat-button (click)="deleteOption(i)" *ngIf="items.length > 2">X</button>
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div class="multiple-option" *ngIf="selectedType === 'Multiple choice'">
+        <button type="button" mat-button (click)="addOption()">Add option</button>
+        <mat-checkbox #checkboxButton formArrayName="options"
+                      *ngFor="let el of items, let i = index"
+                      value="{{optionText.value}}"
+                      (click)="toggleCheckbox(checkboxButton)">
+          <input matInput #optionText type="text" [formControlName]="i">
+          <button type="button" mat-button (click)="deleteOption(i)" *ngIf="items.length > 2">X</button>
+        </mat-checkbox>
+      </div>
+    </div>
+    <button mat-button type="submit">Post question</button>
+  </form>
+</div>

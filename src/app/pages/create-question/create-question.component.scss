@@ -1,0 +1,60 @@
+.container {
+  flex-direction: column;
+
+  form {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    mat-select {
+      margin: 7% 0;
+    }
+
+    .question {
+      margin: 5% 0;
+    }
+
+    .options {
+      display: flex;
+      justify-content: center;
+
+      .quantity {
+        margin: 5% 0 0;
+      }
+
+      .single-option {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        mat-radio-group {
+          display: flex;
+          flex-direction: column;
+
+          .mat-radio-button {
+            margin: 2% 0;
+          }
+
+          input {
+            margin-left: 4%;
+          }
+        }
+      }
+
+      .multiple-option {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .mat-checkbox {
+          margin: 2% 0;
+        }
+
+        input {
+          margin-left: 4%;
+        }
+      }
+    }
+  }
+}

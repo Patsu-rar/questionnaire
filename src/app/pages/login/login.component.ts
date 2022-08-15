@@ -1,23 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../shared/services/auth.service";
-
-export const users = [
-  {
-    id: 1,
-    first_name: "Admin",
-    last_name: "DeeperSignals",
-    email: "admin@deepersignals.com",
-    password: "asd",
-  },
-  {
-    id: 2,
-    first_name: "User",
-    last_name: "DeeperSignals",
-    email: "user@deepersignals.com",
-    password: "asd",
-  }
-]
+import {Router} from "@angular/router";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Component({
   selector: 'app-login',
@@ -29,20 +14,33 @@ export class LoginComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required])
   });
+  firebaseErrorMessage: string;
 
-  loading: boolean = false;
+  constructor(private authService: AuthService, private router: Router, private afAuth: AngularFireAuth) {
+    this.loginForm = new FormGroup({
+      'email': new FormControl('', [Validators.required, Validators.email]),
+      'password': new FormControl('', Validators.required)
+    });
 
-  constructor(private loginService: AuthService) {}
+    this.firebaseErrorMessage = '';
+  }
+
 
   ngOnInit(): void {
-    localStorage.setItem('users', JSON.stringify(users));
   }
 
   login() {
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid)
       return;
-    }
 
-    return this.loginService.login(this.loginForm.value);
+    this.authService.loginUser(this.loginForm.value.email, this.loginForm.value.password).then((result) => {
+      if (result == null) {
+        this.router.navigate(['/management']);
+      }
+      else if (result.isValid == false) {
+        this.firebaseErrorMessage = result.message;
+      }
+    });
+
   }
 }

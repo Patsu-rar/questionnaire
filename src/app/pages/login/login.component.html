@@ -1,15 +1,15 @@
-<div class="container" *ngIf="!loading">
+<div class="container">
   <form [formGroup]="loginForm" class="loginForm" (submit)="login()">
     <h2>Login:</h2>
     <mat-form-field appearance="outline">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email">
+      <input type="email" matInput formControlName="email">
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Password</mat-label>
       <input type="password" matInput formControlName="password">
     </mat-form-field>
     <button mat-raised-button type="submit">Login</button>
+    <a class="signup-btn" mat-raised-button [routerLink]="'/signup'">Don't have an account?</a>
   </form>
 </div>
-<app-loader *ngIf="loading"></app-loader>

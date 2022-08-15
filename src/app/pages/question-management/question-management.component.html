@@ -1,1 +1,15 @@
-<p>question-management works!</p>
+<div class="container">
+  <a [routerLink]="'/create'" mat-raised-button>Create question</a>
+  <div class="card" *ngFor="let question of questions">
+    <div class="description">
+      <b>Question: {{question.text}}</b>
+      <p>Type: {{question.type}}</p>
+      <p>Date: {{question.created}}</p>
+    </div>
+    <div class="controls">
+      <a [routerLink]="'/edit'" mat-raised-button (click)="editQuestion(question)">Edit</a>
+      <button mat-raised-button (click)="deleteQuestion(question)">Delete</button>
+    </div>
+  </div>
+</div>
+
