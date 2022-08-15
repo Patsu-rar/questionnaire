@@ -1,4 +1,4 @@
-<nav class="navigation" *ngIf="authService.isLogged">
+<nav class="navigation" *ngIf="authService.userLoggedIn">
   <a class="nav-item" [routerLink]="'/'">Questions list</a>
   <a class="nav-item" [routerLink]="'/management'">Questions management</a>
   <a class="nav-item" (click)="logout()">Logout</a>

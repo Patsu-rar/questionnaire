@@ -1,42 +1,48 @@
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
-
-const users: any = localStorage.getItem('users');
-
+import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  activeUser: any = JSON.parse(localStorage.getItem('activeUser')!);
-  isLogged?: boolean = JSON.parse(localStorage.getItem('isLogged')!);
+  userLoggedIn: boolean;
 
-  constructor(private router: Router) {
-    console.log(this.isLogged);
+  constructor(private router: Router, private afAuth: AngularFireAuth) {
+    this.userLoggedIn = false;
+
+    this.afAuth.onAuthStateChanged((user) => {
+      this.userLoggedIn = !!user;
+    });
   }
 
-  login(data : {email: string, password: string}) {
-    const user = JSON.parse(users).filter((el: any) => {
-      return el.email === data.email && el.password === data.password;
-    });
-    this.activeUser = user[0];
-    if (!this.activeUser) {
-      return alert('Incorrect email or password');
-    } else {
-      localStorage.setItem('activeUser', JSON.stringify(this.activeUser));
-      localStorage.setItem('isLogged', 'true');
-      this.isLogged = true;
+  loginUser(email: string, password: string): Promise<any> {
+    return this.afAuth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.router.navigate(['/']);
+      })
+      .catch(error => {
+        if (error.code)
+          return { isValid: false, message: error.message };
+        return error;
+      });
+  }
 
-      return this.router.navigate(['/']);
-    }
+  signupUser(user: any): Promise<any> {
+    return this.afAuth.createUserWithEmailAndPassword(user.email, user.password)
+      .then((result) => {
+        result.user!.sendEmailVerification();
+      })
+      .catch(error => {
+        if (error.code)
+          return { isValid: false, message: error.message };
+        return error;
+      });
   }
 
   logout() {
-    localStorage.removeItem('activeUser');
-    this.activeUser = JSON.parse(localStorage.getItem('activeUser')!);
-    localStorage.setItem('isLogged', 'false');
-    this.isLogged = false;
-
-    return this.router.navigate(['/login']);
+    return this.afAuth.signOut().then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 }
